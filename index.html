@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>CinemaWorld - Movie Booking</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Reset some basics */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #181818;
+            color: #f0f0f0;
+        }
+        /* Navbar */
+        .navbar {
+            background: #121212;
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #ff5656;
+            letter-spacing: 2px;
+        }
+        .navbar .menu {
+            display: flex;
+            gap: 2rem;
+        }
+        .navbar .menu a {
+            text-decoration: none;
+            color: #f0f0f0;
+            font-size: 1.1rem;
+            transition: color 0.2s;
+        }
+        .navbar .menu a:hover {
+            color: #ff5656;
+        }
+        .navbar .profile {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        .navbar .profile img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 2px solid #ff5656;
+        }
+        /* Hero Section */
+        .hero {
+            background: url('https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1500&q=80') center/cover no-repeat;
+            padding: 6rem 2rem 3rem 2rem;
+            text-align: center;
+            color: #fff;
+            position: relative;
+        }
+        .hero::after {
+            content: '';
+            display: block;
+            position: absolute;
+            top:0; left:0; right:0; bottom:0;
+            background: rgba(24,24,24,0.7);
+            z-index: 0;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #ff5656;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+        }
+        .search-bar {
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto 0 auto;
+            display: flex;
+        }
+        .search-bar input {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 4px 0 0 4px;
+            font-size: 1rem;
+        }
+        .search-bar button {
+            background: #ff5656;
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+        }
+        .search-bar button:hover {
+            background: #d13c3c;
+        }
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        .section-title {
+            font-size: 2rem;
+            color: #ff5656;
+            margin: 2rem 0 1rem 0;
+        }
+        /* Movies Grid */
+        .movies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .movie-card {
+            background: #232323;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+        .movie-card:hover {
+            transform: translateY(-6px) scale(1.03);
+        }
+        .movie-poster {
+            width: 100%;
+            height: 320px;
+            object-fit: cover;
+        }
+        .movie-info {
+            padding: 1rem;
+            flex-grow: 1;
+        }
+        .movie-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #fff;
+        }
+        .movie-meta {
+            font-size: 0.95rem;
+            color: #aaa;
+            margin: 0.2rem 0 0.7rem 0;
+        }
+        .movie-desc {
+            font-size: 0.95rem;
+            color: #ccc;
+            margin-bottom: 0.8rem;
+        }
+        .book-btn {
+            background: #ff5656;
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.2rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            width: 100%;
+            transition: background 0.2s;
+        }
+        .book-btn:hover {
+            background: #d13c3c;
+        }
+        /* Menu/Sidebar */
+        .sidebar {
+            background: #232323;
+            padding: 2rem 1.2rem;
+            border-radius: 10px;
+            width: 250px;
+            min-width: 220px;
+            margin-right: 2rem;
+            height: fit-content;
+        }
+        .sidebar h3 {
+            color: #ff5656;
+            margin-bottom: 1rem;
+            font-size: 1.25rem;
+        }
+        .sidebar ul {
+            list-style: none;
+        }
+        .sidebar ul li {
+            margin-bottom: 1.1rem;
+        }
+        .sidebar ul li a {
+            color: #f0f0f0;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.2s;
+        }
+        .sidebar ul li a:hover {
+            color: #ff5656;
+        }
+        /* Layout */
+        .main-flex {
+            display: flex;
+            gap: 2rem;
+        }
+        /* Showtimes Table */
+        .showtimes-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 2rem;
+        }
+        .showtimes-table th, .showtimes-table td {
+            padding: 0.8rem 1rem;
+            border: 1px solid #444;
+            text-align: left;
+        }
+        .showtimes-table th {
+            background: #1a1a1a;
+            color: #ff5656;
+        }
+        .showtimes-table tr:nth-child(even) {
+            background: #232323;
+        }
+        /* Footer */
+        .footer {
+            background: #121212;
+            color: #aaa;
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 3rem;
+        }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-flex { flex-direction: column; }
+            .sidebar { width: 100%; margin: 0 0 2rem 0; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo">CinemaWorld</div>
+        <div class="menu">
+            <a href="#">Home</a>
+            <a href="#">Now Showing</a>
+            <a href="#">Upcoming</a>
+            <a href="#">Theatres</a>
+            <a href="#">Offers</a>
+            <a href="#">Contact</a>
+            <a href="#">About</a>
+        </div>
+        <div class="profile">
+            <span>Hi, Guest</span>
+            
+        </div>
+    </nav>
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Book Your Movie Tickets Online</h1>
+            <p>Experience movies like never before. Find your favorite movies, select your seats, and book tickets instantly.</p>
+            <form class="search-bar">
+                <input type="text" placeholder="Search movies, actors, theatres...">
+                <button type="submit">Search</button>
+            </form>
+        </div>
+    </section>
+    <div class="container main-flex">
+        <aside class="sidebar">
+            <h3>Quick Menu</h3>
+            <ul>
+                <li><a href="#">My Bookings</a></li>
+                <li><a href="#">Wallet</a></li>
+                <li><a href="#">Popular Movies</a></li>
+                <li><a href="#">Top Rated</a></li>
+                <li><a href="#">Genres</a></li>
+                <li><a href="#">Languages</a></li>
+                <li><a href="#">Gift Cards</a></li>
+                <li><a href="#">Help & Support</a></li>
+            </ul>
+            <h3>Genres</h3>
+            <ul>
+                <li><a href="#">Action</a></li>
+                <li><a href="#">Drama</a></li>
+                <li><a href="#">Comedy</a></li>
+                <li><a href="#">Thriller</a></li>
+                <li><a href="#">Horror</a></li>
+                <li><a href="#">Romance</a></li>
+                <li><a href="#">Animation</a></li>
+                <li><a href="#">Sci-Fi</a></li>
+            </ul>
+        </aside>
+        <main style="flex: 1;">
+            <h2 class="section-title">Now Showing</h2>
+            <div class="movies-grid">
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/I/71niXI3lxlL._AC_SY679_.jpg" class="movie-poster" alt="Movie Poster">
+                    <div class="movie-info">
+                        <div class="movie-title">Inception</div>
+                        <div class="movie-meta">PG-13 | 2h 28m | Sci-Fi, Action</div>
+                        <div class="movie-desc">A thief with the rare ability to enter people's dreams and steal secrets gets a final chance for redemption.</div>
+                        <button class="book-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://resizing.flixster.com/47rDB5jGZrHWyRMRYMZKenbTcHU=/fit-in/705x460/v2/https://resizing.flixster.com/Y_sqtbGDcspx4oob3nD-lojSLjc=/ems.cHJkLWVtcy1hc3NldHMvbW92aWVzL2YyMWZjZTQ2LWQwZGItNGRhMi1hZjg3LWFhZDQ1YWU1OTQ2NC53ZWJw" class="movie-poster" alt="Movie Poster">
+                    <div class="movie-info">
+                        <div class="movie-title">Interstellar</div>
+                        <div class="movie-meta">PG-13 | 2h 49m | Adventure, Drama</div>
+                        <div class="movie-desc">A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival.</div>
+                        <button class="book-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://imageio.forbes.com/blogs-images/markhughes/files/2019/04/AVENGERS-ENDGAME-poster-2-1200x1823.jpg?format=jpg&height=600&width=1200&fit=bounds" class="movie-poster" alt="Movie Poster">
+                    <div class="movie-info">
+                        <div class="movie-title">Avengers: Endgame</div>
+                        <div class="movie-meta">PG-13 | 3h 2m | Action, Adventure</div>
+                        <div class="movie-desc">After the devastating events of Infinity War, the Avengers assemble once more in order to reverse Thanos' actions.</div>
+                        <button class="book-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://fwcdn.pl/fpo/01/67/810167/7905225_1.3.jpg" class="movie-poster" alt="Movie Poster">
+                    <div class="movie-info">
+                        <div class="movie-title">Joker</div>
+                        <div class="movie-meta">R | 2h 2m | Crime, Drama</div>
+                        <div class="movie-desc">A mentally troubled stand-up comedian embarks on a downward spiral that leads to the creation of an iconic villain.</div>
+                        <button class="book-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuazWgS9Ga1kCR5b3dkNqDw-jFMpMIdkDsndnOLSnLtDyPa4spLu2g8Zb_v8U2O01bczc&usqp=CAU" class="movie-poster" alt="Movie Poster">
+                    <div class="movie-info">
+                        <div class="movie-title">Frozen II</div>
+                        <div class="movie-meta">PG | 1h 43m | Animation, Adventure</div>
+                        <div class="movie-desc">Anna, Elsa, Kristoff, Olaf and Sven leave Arendelle to travel to an ancient, autumn-bound forest of an enchanted land.</div>
+                        <button class="book-btn">Book Now</button>
+                    </div>
+                </div>
+                <div class="movie-card">
+                    <img src="https://m.media-amazon.com/images/S/pv-target-images/2c6bf6218aa296881bfba2aa6838a21a8bf768d844ad4522fe9931cdcb7a9f33.jpg" class="movie-poster" alt="Movie Poster">
+                    <div class="movie-info">
+                        <div class="movie-title">The Lion King</div>
+                        <div class="movie-meta">PG | 1h 58m | Animation, Adventure</div>
+                        <div class="movie-desc">After the murder of his father, a young lion prince flees his kingdom only to learn the true meaning of responsibility and bravery.</div>
+                        <button class="book-btn">Book Now</button>
+                    </div>
+                </div>
+            </div>
+            <h2 class="section-title">Showtimes</h2>
+            <table class="showtimes-table">
+                <thead>
+                    <tr>
+                        <th>Movie</th>
+                        <th>Theatre</th>
+                        <th>Date</th>
+                        <th>Times</th>
+                        <th>Language</th>
+                        <th>Available Seats</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Inception</td>
+                        <td>CinemaWorld Multiplex</td>
+                        <td>2025-07-05</td>
+                        <td>10:30 AM, 1:30 PM, 6:00 PM</td>
+                        <td>English</td>
+                        <td>42</td>
+                    </tr>
+                    <tr>
+                        <td>Interstellar</td>
+                        <td>Grand Cinema Hall</td>
+                        <td>2025-07-05</td>
+                        <td>12:00 PM, 3:40 PM, 8:15 PM</td>
+                        <td>English</td>
+                        <td>36</td>
+                    </tr>
+                    <tr>
+                        <td>Avengers: Endgame</td>
+                        <td>Galaxy Theatres</td>
+                        <td>2025-07-05</td>
+                        <td>11:00 AM, 4:00 PM, 9:30 PM</td>
+                        <td>English, Hindi</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>Joker</td>
+                        <td>Regal Cinemas</td>
+                        <td>2025-07-05</td>
+                        <td>2:00 PM, 7:00 PM</td>
+                        <td>English</td>
+                        <td>55</td>
+                    </tr>
+                    <tr>
+                        <td>Frozen II</td>
+                        <td>Kids Cinema</td>
+                        <td>2025-07-05</td>
+                        <td>10:00 AM, 1:00 PM, 4:00 PM</td>
+                        <td>English, Hindi</td>
+                        <td>60</td>
+                    </tr>
+                    <tr>
+                        <td>The Lion King</td>
+                        <td>Family Movieplex</td>
+                        <td>2025-07-05</td>
+                        <td>11:30 AM, 3:00 PM, 6:30 PM</td>
+                        <td>English, Hindi</td>
+                        <td>45</td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+    </div>
+    <footer class="footer">
+        &copy; 2025 CinemaWorld. All Rights Reserved. | <a href="#" style="color:#ff5656;">Terms</a> | <a href="#" style="color:#ff5656;">Privacy</a> | <a href="#" style="color:#ff5656;">Contact Support</a>
+    </footer>
+</body>
+</html>
